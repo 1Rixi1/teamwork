@@ -2,6 +2,7 @@ import React from "react";
 import { initialProfile } from "@/lib/initial-profile";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
+import InitialModel from "@/components/models/initial-model";
 
 const Page = async () => {
   const user = await initialProfile();
@@ -20,7 +21,7 @@ const Page = async () => {
     redirect(`servers/${server.id}`);
   }
 
-  return <div>Create new Server !</div>;
+  return <InitialModel />;
 };
 
 export default Page;
