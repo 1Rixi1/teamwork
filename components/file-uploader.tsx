@@ -15,9 +15,8 @@ import "@uploadthing/react/styles.css";
 const FileUploader = ({ endpoint, value, onChange }: FileUploaderType) => {
   const fileType = value.split(".").pop();
   if (fileType && fileType !== "pdf") {
-    console.log("value", value);
     return (
-      <div className='relative h-20 w-20'>
+      <div className="relative h-20 w-20">
         <Image fill src={value} alt="image" className="rounded-full" />
         <button
           className="p-1 bg-rose-500 text-white rounded-full absolute top-0 right-0 shadow-sm cursor-pointer"
