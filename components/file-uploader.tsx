@@ -5,12 +5,13 @@ import { UploadDropzone } from "@/lib/uploadthing";
 import Image from "next/image";
 import { X } from "lucide-react";
 
+import "@/app/uploadthing-styles.css";
+
 type FileUploaderType = {
   endpoint: "serverImage" | "fileMessage";
   value: string;
   onChange: (url?: string) => void;
 };
-import "@uploadthing/react/styles.css";
 
 const FileUploader = ({ endpoint, value, onChange }: FileUploaderType) => {
   const fileType = value.split(".").pop();
@@ -30,13 +31,16 @@ const FileUploader = ({ endpoint, value, onChange }: FileUploaderType) => {
   }
 
   return (
-    <UploadDropzone
-      endpoint={endpoint}
-      onClientUploadComplete={(res) => onChange(res[0].url)}
-      onUploadError={(err) => {
-        console.log("err", err);
-      }}
-    />
+    <div className='uploadthing-wrapper'>
+      <UploadDropzone
+        endpoint={endpoint}
+        onClientUploadComplete={(res) => onChange(res[0].url)}
+        onUploadError={(err) => {
+          console.log("err", err);
+        }}
+      />
+    </div>
+
   );
 };
 

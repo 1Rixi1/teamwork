@@ -1,13 +1,11 @@
 import { currentProfile } from "@/lib/current-profile";
-import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { v4 as uuidv4 } from "uuid";
-import { MemberRole } from ".prisma/client";
 import { NextResponse } from "next/server";
+import { MemberRole } from "@prisma/client";
 
-async function POST(req: Request) {
+export async function POST(req: Request) {
   const { name, imageUrl } = await req.json();
-
   try {
     const profile = await currentProfile();
 
@@ -15,7 +13,7 @@ async function POST(req: Request) {
       return new NextResponse("unAuthorized", { status: 401 });
     }
 
-    const server = db.server.create({
+    const server = await db.server.create({
       data: {
         profileId: profile.id,
         name,
