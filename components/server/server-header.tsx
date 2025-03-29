@@ -1,3 +1,4 @@
+"use client";
 import { ServerWithChannelsWithProfile } from "@/type";
 import { MemberRole } from "@prisma/client";
 import {
@@ -16,16 +17,19 @@ import {
   User,
   UserPlus,
 } from "lucide-react";
+import { useModal } from "@/hooks/use-modal";
 
 type ServerHeaderPropsType = {
   server: ServerWithChannelsWithProfile;
   currentProfileRole: MemberRole;
 };
 
-const ServerHeader = async ({
+const ServerHeader = ({
   server,
   currentProfileRole,
 }: ServerHeaderPropsType) => {
+  const { onOpen } = useModal();
+
   const isAdmin = currentProfileRole === MemberRole.ADMIN;
   const isModerator = isAdmin || currentProfileRole === MemberRole.MODERATOR;
 
@@ -43,12 +47,18 @@ const ServerHeader = async ({
 
       <DropdownMenuContent className="w-56 text-xs font-medium text-black space-y-[2px] dark:text-neutral-400">
         {isModerator && (
-          <DropdownMenuItem className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm cursor-pointer">
+          <DropdownMenuItem
+            className="text-indigo-600 dark:text-indigo-400 px-3 py-2 text-sm cursor-pointer"
+            onClick={() => onOpen("invite", { server })}
+          >
             Пригласить пользователя <UserPlus className="w-4 h-4 ml-auto" />
           </DropdownMenuItem>
         )}
         {isAdmin && (
-          <DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer">
+          <DropdownMenuItem
+            className="px-3 py-2 text-sm cursor-pointer"
+            onClick={() => onOpen("edit", { server })}
+          >
             Настройки сервера <Settings className="w-4 h-4 ml-auto" />
           </DropdownMenuItem>
         )}
