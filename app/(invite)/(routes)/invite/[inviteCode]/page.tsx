@@ -38,7 +38,7 @@ const Page = async ({ params }: { params: { inviteCode: string } }) => {
   });
 
   if (addProfileToServer) {
-    return redirect(`/server/${addProfileToServer.id}`);
+    return redirect(`/servers/${addProfileToServer.id}`);
   }
 
   return null;
