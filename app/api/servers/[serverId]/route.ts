@@ -2,6 +2,37 @@ import { currentProfile } from "@/lib/current-profile";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
+export async function DELETE(
+  req: Request,
+  { params }: { params: { serverId: string } }
+) {
+  try {
+    const profile = await currentProfile();
+
+    const serverId = params.serverId;
+
+    if (!profile) {
+      return new NextResponse("UnAuthorized", { status: 401 });
+    }
+
+    if (!serverId) {
+      return new NextResponse("Server Id Missing", { status: 400 });
+    }
+
+    const server = await db.server.delete({
+      where: {
+        id: serverId,
+        profileId: profile.id,
+      },
+    });
+
+    return NextResponse.json(server);
+  } catch (err) {
+    console.log("SERVER_DELETE", err);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+
 export async function PATCH(
   req: Request,
   { params }: { params: { serverId: string } }
