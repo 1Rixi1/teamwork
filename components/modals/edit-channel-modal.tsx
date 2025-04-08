@@ -47,22 +47,20 @@ const formSchema = z.object({
   type: z.nativeEnum(ChannelType),
 });
 
-const CreateChannelModal = () => {
+const EditChannelModal = () => {
   const router = useRouter();
-
-  const params = useParams();
 
   const { type, isOpen, onClose, data } = useModal();
 
-  const { channelType } = data;
+  const { server, channel } = data;
 
-  const isOpenModal = isOpen && type === "createChannel";
+  const isOpenModal = isOpen && type === "editChannel";
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      type: channelType || ChannelType.TEXT,
+      type: channel?.type || ChannelType.TEXT,
     },
   });
 
@@ -71,15 +69,18 @@ const CreateChannelModal = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const url = qs.stringifyUrl({
-        url: `/api/channels`,
+        url: `/api/channels/${channel?.id}`,
         query: {
-          serverId: params.serverId,
+          serverId: server?.id,
         },
       });
 
-      await axios.post(url, values);
+      await axios.patch(url, values);
+
+      onClose();
 
       router.refresh();
+      router.push(`/servers/${server?.id}`);
     } catch (err) {
       console.log("err -", err);
     }
@@ -92,19 +93,18 @@ const CreateChannelModal = () => {
   };
 
   useEffect(() => {
-    if (channelType) {
-      form.setValue("type", channelType);
-    } else {
-      form.setValue("type", ChannelType.TEXT);
+    if (channel) {
+      form.setValue("name", channel.name);
+      form.setValue("type", channel.type);
     }
-  }, [channelType, form]);
+  }, [channel, form]);
 
   return (
     <Dialog open={isOpenModal} onOpenChange={handleOpenChange}>
       <DialogContent className="p-0 bg-white text-black overflow-hidden">
         <DialogHeader className="pt-8 px-6">
           <DialogTitle className="text-2xl text-center font-bold">
-            Создайте канал
+            Редактирование канала
           </DialogTitle>
         </DialogHeader>
 
@@ -179,7 +179,7 @@ const CreateChannelModal = () => {
                 variant="primary"
                 disabled={isLoading}
               >
-                Создать сервер
+                Сохранить
               </Button>
             </DialogFooter>
           </form>
@@ -189,4 +189,4 @@ const CreateChannelModal = () => {
   );
 };
 
-export default CreateChannelModal;
+export default EditChannelModal;
