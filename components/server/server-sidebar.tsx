@@ -188,27 +188,23 @@ const ServerSidebar = async ({ serverId }: { serverId: string }) => {
                 />
               ))}
             </div>
+          </div>
+        )}
 
-            {!!members.length && (
-              <div className="mb-2">
-                <ServerSection
-                  label="Участники"
-                  sectionType="members"
-                  role={currentProfileRole}
-                  server={server}
-                />
+        {!!members.length && (
+          <div className="mb-2">
+            <ServerSection
+              label="Участники"
+              sectionType="members"
+              role={currentProfileRole}
+              server={server}
+            />
 
-                <div className="space-y-[2px]">
-                  {members.map((member) => (
-                    <ServerMember
-                      key={member.id}
-                      member={member}
-                      server={server}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+            <div className="space-y-[2px]">
+              {members.map((member) => (
+                <ServerMember key={member.id} member={member} server={server} />
+              ))}
+            </div>
           </div>
         )}
       </ScrollArea>
