@@ -10,6 +10,7 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import ModalProvider from "@/components/provider/modal-provider";
+import { SocketProvider } from "@/components/provider/socket-provider";
 const font = Open_Sans({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "TeamWork",
@@ -32,11 +33,13 @@ export default function RootLayout({
             enableSystem={true}
           >
             <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-            <ModalProvider />
-            {children}
+            <SocketProvider>
+              <ModalProvider />
+              {children}
+            </SocketProvider>
           </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
-  )
+  );
 }
