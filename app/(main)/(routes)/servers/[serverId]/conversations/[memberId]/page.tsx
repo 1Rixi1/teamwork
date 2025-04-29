@@ -6,13 +6,15 @@ import { getOrCreateConversation } from "@/lib/conversation";
 import ChatHeader from "@/components/chat/chat-header";
 
 type MemberIdProps = {
-  params: {
+  params: Promise<{
     serverId: string;
     memberId: string;
-  };
+  }>;
 };
 
 const Page = async ({ params }: MemberIdProps) => {
+  const { serverId, memberId } = await params;
+
   const profile = await currentProfile();
 
   if (!profile) {
@@ -21,7 +23,7 @@ const Page = async ({ params }: MemberIdProps) => {
 
   const currentMember = await db.member.findFirst({
     where: {
-      serverId: params.serverId,
+      serverId: serverId,
       profileId: profile.id,
     },
 
@@ -36,11 +38,11 @@ const Page = async ({ params }: MemberIdProps) => {
 
   const conversation = await getOrCreateConversation(
     currentMember.id,
-    params.memberId,
+    memberId,
   );
 
   if (!conversation) {
-    return redirect(`/servers/${params.serverId}`);
+    return redirect(`/servers/${serverId}`);
   }
 
   const { memberOne, memberTwo } = conversation;
@@ -51,7 +53,7 @@ const Page = async ({ params }: MemberIdProps) => {
   return (
     <div className="flex flex-col h-full bg-white dark:bg-[#313338]">
       <ChatHeader
-        serverId={params.serverId}
+        serverId={serverId}
         name={otherMember.profile.name}
         type="conversation"
         imageUrl={otherMember.profile.imageUrl}

@@ -5,10 +5,12 @@ import { db } from "@/lib/db";
 import { channel } from "diagnostics_channel";
 
 type ServerIdProps = {
-  params: { serverId: string };
+  params: Promise<{ serverId: string }>;
 };
 
 const Page = async ({ params }: ServerIdProps) => {
+  const { serverId } = await params;
+
   const profile = await currentProfile();
 
   if (!profile) {
@@ -17,7 +19,7 @@ const Page = async ({ params }: ServerIdProps) => {
 
   const server = await db.server.findUnique({
     where: {
-      id: params.serverId,
+      id: serverId,
       members: {
         some: {
           profileId: profile.id,
@@ -43,7 +45,7 @@ const Page = async ({ params }: ServerIdProps) => {
     return null;
   }
 
-  return redirect(`/servers/${params.serverId}/channels/${initialChannels.id}`);
+  return redirect(`/servers/${serverId}/channels/${initialChannels.id}`);
 };
 
 export default Page;

@@ -6,13 +6,15 @@ import ChatHeader from "@/components/chat/chat-header";
 import ChatInput from "@/components/chat/chat-input";
 
 type ChannelIdProps = {
-  params: {
+  params: Promise<{
     serverId: string;
     channelId: string;
-  };
+  }>;
 };
 
 const Page = async ({ params }: ChannelIdProps) => {
+  const { serverId, channelId } = await params;
+
   const profile = await currentProfile();
 
   if (!profile) {
@@ -21,13 +23,13 @@ const Page = async ({ params }: ChannelIdProps) => {
 
   const channel = await db.channel.findUnique({
     where: {
-      id: params.channelId,
+      id: channelId,
     },
   });
 
   const member = await db.member.findFirst({
     where: {
-      serverId: params.serverId,
+      serverId: serverId,
       profileId: profile.id,
     },
   });
@@ -38,11 +40,7 @@ const Page = async ({ params }: ChannelIdProps) => {
 
   return (
     <div className="flex flex-col h-screen bg-white dark:bg-[#313338]">
-      <ChatHeader
-        serverId={params.serverId}
-        name={channel.name}
-        type="channel"
-      />
+      <ChatHeader serverId={serverId} name={channel.name} type="channel" />
       <div className="flex-1"></div>
       <ChatInput
         name={channel.name}

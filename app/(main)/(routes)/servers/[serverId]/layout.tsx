@@ -9,8 +9,9 @@ const Layout = async ({
   params,
 }: {
   children: React.ReactNode;
-  params: { serverId: string };
+  params: Promise<{ serverId: string }>;
 }) => {
+  const { serverId } = await params;
   const profile = await currentProfile();
 
   if (!profile) {
@@ -19,7 +20,7 @@ const Layout = async ({
 
   const server = await db.server.findUnique({
     where: {
-      id: params.serverId,
+      id: serverId,
       members: {
         some: {
           profileId: profile.id,
@@ -35,7 +36,7 @@ const Layout = async ({
   return (
     <div className="h-full">
       <div className="hidden md:flex flex-col w-60 h-full z-30 fixed inset-y-0">
-        <ServerSidebar serverId={params.serverId} />
+        <ServerSidebar serverId={serverId} />
       </div>
 
       <main className="md:pl-60 h-full">{children}</main>
